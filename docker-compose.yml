@@ -10,7 +10,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     expose:
-      - '3306'
+      - '${MYSQL_PORT}'
     volumes:
       - my-db-test:/var/lib/mysql
     networks:
@@ -20,11 +20,19 @@ services:
     build: ./springboot-employees-jpa-crud/.
     restart: always
     environment: 
-      - "JAVA_OPTS=-Dspring.datasource.url=jdbc:mysql://db:3306/${DB_NAME}?serverTimezone=EST5EDT -Dspring.datasource.username=${MYSQL_USER} -Dspring.datasource.password=${MYSQL_PASSWORD}"
+      - "JAVA_OPTS=-Dspring.datasource.url=jdbc:mysql://db:${MYSQL_PORT}/${DB_NAME}?serverTimezone=EST5EDT -Dspring.datasource.username=${MYSQL_USER} -Dspring.datasource.password=${MYSQL_PASSWORD}"
     depends_on:
       - db
     expose:
       - '3000'
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: '200M'
+        reservations:
+          cpus: '0.5'
+          memory: '100M'
     networks:
       - back_net
       - front_net
@@ -35,8 +43,6 @@ services:
     depends_on:
       - db
       - employeesbackendapp
-    #links:
-    #  - employeesbackendapp
     expose:
       - '3001'
     networks:
