@@ -23,7 +23,7 @@ import co.edu.udea.microservices.employee.model.Employee;
 import co.edu.udea.microservices.employee.repository.EmployeeRepository;
 
 @RestController 
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:9090", "http://localhost:3000", "http://localhost:8080", "http://localhost:80", "https://localhost", "http://localhost:443"})
+@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8080"})
 @RequestMapping("/api/v1")
 public class EmployeeController {
     @Autowired
