@@ -14,7 +14,7 @@
 - Se recomienda el uso de traefik, nginx o haproxy para este microservicio
 - Este microservicio debe tener la capacidad de descubrir de forma automatica los microservicios de frontend y enrutar peticiones a estos a medida que son adicionaos/retirados.
 - Los usuarios deben poder entrar a la aplicacion tanto por puerto 80 como por puerto 443 (TLS), para lo cual se debe generar un certificado digital.
--  - Este servicio debe estar conectado a una red exclusiva llamada front_net
+- Este servicio debe estar conectado a una red exclusiva llamada front_net
 
 ### Microservicio de Frontend
 
