@@ -1,0 +1,68 @@
+version: '3.5'
+
+services:
+  db:
+    image: mysql:8.0.17
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    expose:
+      - '3306'
+    volumes:
+      - my-db-test:/var/lib/mysql
+    networks:
+      - back_net
+
+  employeesbackendapp:
+    build: ./springboot-employees-jpa-crud/.
+    restart: always
+    environment: 
+      - "JAVA_OPTS=-Dspring.datasource.url=jdbc:mysql://db:3306/${DB_NAME}?serverTimezone=EST5EDT -Dspring.datasource.username=${MYSQL_USER} -Dspring.datasource.password=${MYSQL_PASSWORD}"
+    depends_on:
+      - db
+    expose:
+      - '3000'
+    networks:
+      - back_net
+      - front_net
+
+  employeesfrontendapp:
+    build: ./angular8-springboot-client/.
+    restart: always
+    depends_on:
+      - db
+      - employeesbackendapp
+    #links:
+    #  - employeesbackendapp
+    expose:
+      - '3001'
+    networks:
+      - front_net
+  
+  loadbalancer:
+    build: ./load-balancer/.
+    restart: always
+    depends_on: 
+      - employeesbackendapp
+      - employeesfrontendapp
+    volumes:
+      - load-balancer:/etc/nginx
+    tty: true
+    expose:
+      - "9090"
+    ports:
+      - '8080:80'
+      - '9090:9090'
+    networks:
+      - front_net
+
+volumes:
+  my-db-test:
+  load-balancer:
+
+networks:
+  back_net:
+  front_net:
